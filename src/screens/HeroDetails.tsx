@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -10,29 +10,19 @@ import {
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
-import {CachedRequestsProvider, useCachedRequests} from '../components/prueba';
+import {CachedRequestsProvider} from '../components/prueba';
+import {useHeroDetailsSetup} from '../hooks/useHeroDetailsSetup';
 import {useNavigation} from '../hooks/useNavigation';
 import {useRoute} from '../hooks/useRoute';
 import {styles} from '../theme/styles';
-import {MarvelComicData} from '../types/data';
 
 export const HeroDetails = () => {
   const route = useRoute<'heroDetails'>();
   const navigation = useNavigation();
-
   const hero = route.params.hero;
+
+  const {currentComics, state, actions} = useHeroDetailsSetup();
   const url = `http://gateway.marvel.com/v1/public/characters/${hero.id}`;
-
-  const [state, actions] = useCachedRequests();
-
-  const [currentComics, setCurrentComics] = useState<MarvelComicData[]>([]);
-  useEffect(() => {
-    if (state.url && state.data && state.data[url] && !state.isFetching) {
-      setCurrentComics(
-        (list) => [...list, ...state.data[url]] as MarvelComicData[],
-      );
-    }
-  }, [state.data, state.isFetching, state.url, url]);
 
   return (
     <CachedRequestsProvider maxResultsPerPage={10} url={url}>

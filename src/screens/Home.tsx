@@ -1,5 +1,4 @@
-import {useIsFocused} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -11,40 +10,24 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useDispatch, useSelector} from 'react-redux';
-import {logout} from '../api/logout';
 import {Button} from '../components/Button';
-import {CachedRequestsProvider, useCachedRequests} from '../components/prueba';
-import {useNavigation} from '../hooks/useNavigation';
-import {setUser} from '../store/user/actions';
-import {UserState} from '../store/user/reducer';
+import {CachedRequestsProvider} from '../components/prueba';
+import {useHomeSetup} from '../hooks/useHomeSetup';
 import {styles} from '../theme/styles';
-import {MarvelHeroData} from '../types/data';
+
+const url = 'http://gateway.marvel.com/v1/public/characters';
 
 export const Home = () => {
-  const url = 'http://gateway.marvel.com/v1/public/characters';
-  const navigation = useNavigation();
-
   function HeroesList() {
-    const [state, actions] = useCachedRequests();
-    const [loading, setLoading] = useState(false);
-    const [currentList, setCurrentList] = useState<MarvelHeroData[]>([]);
-    const isFocused = useIsFocused();
-    const user = useSelector((userState: UserState) => userState);
-    const dispatch = useDispatch();
-    useEffect(() => {
-      if (
-        state.url &&
-        state.data &&
-        state.data[url] &&
-        !state.isFetching &&
-        isFocused
-      ) {
-        setCurrentList(
-          (list) => [...list, ...state.data[url]] as MarvelHeroData[],
-        );
-      }
-    }, [isFocused, state, state.data, state.isFetching, state.url]);
+    const {
+      state,
+      currentList,
+      user,
+      loading,
+      submitLogout,
+      actions,
+      goToDetails,
+    } = useHomeSetup();
 
     return !state.data || currentList.length === 0 ? (
       <ActivityIndicator size="large" color="#ffffff" />
@@ -61,20 +44,7 @@ export const Home = () => {
                 {user.name + ' ' + user.surname}
               </Text>
             </View>
-            <Button
-              text="logout"
-              loading={loading}
-              onPress={() => {
-                if (loading) {
-                  return;
-                }
-                setLoading(true);
-                logout().then((value: User) => {
-                  dispatch(setUser(value));
-                  setLoading(false);
-                });
-              }}
-            />
+            <Button text="logout" loading={loading} onPress={submitLogout} />
           </View>
         </SafeAreaView>
         <FlatList
@@ -84,7 +54,7 @@ export const Home = () => {
             <>
               <Pressable
                 onPress={() => {
-                  navigation.navigate('heroDetails', {hero: item});
+                  goToDetails(item);
                 }}>
                 <ImageBackground
                   source={{
