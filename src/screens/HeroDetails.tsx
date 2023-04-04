@@ -25,8 +25,6 @@ export const HeroDetails = () => {
 
   const [state, actions] = useCachedRequests();
 
-  console.log('value: ' + JSON.stringify(state));
-
   const [currentComics, setCurrentComics] = useState<MarvelComicData[]>([]);
   useEffect(() => {
     if (state.url && state.data && state.data[url] && !state.isFetching) {
@@ -35,8 +33,6 @@ export const HeroDetails = () => {
       );
     }
   }, [state.data, state.isFetching, state.url, url]);
-
-  console.log(hero.image);
 
   return (
     <CachedRequestsProvider maxResultsPerPage={10} url={url}>
@@ -65,8 +61,8 @@ export const HeroDetails = () => {
             </View>
           </LinearGradient>
         </ImageBackground>
-        <View style={styles.generalPadding}>
-          <Text style={styles.subheader}>comics</Text>
+        <>
+          <Text style={[styles.subheader, styles.generalPadding]}>comics</Text>
 
           {!state.data || currentComics.length === 0 ? (
             <ActivityIndicator size="large" color="#ffffff" />
@@ -79,10 +75,10 @@ export const HeroDetails = () => {
                 <>
                   <ImageBackground
                     source={{uri: item.resourceURI}}
-                    style={styles.card}>
+                    style={styles.verticalCard}>
                     <LinearGradient
                       colors={['#00000000', '#000000']}
-                      style={styles.cardGradient}>
+                      style={styles.verticalCardGradient}>
                       <Text style={styles.subheader}>{item.title}</Text>
                     </LinearGradient>
                   </ImageBackground>
@@ -92,7 +88,7 @@ export const HeroDetails = () => {
               onEndReachedThreshold={0.25}
             />
           )}
-        </View>
+        </>
       </ScrollView>
     </CachedRequestsProvider>
   );

@@ -75,6 +75,20 @@ const styles = StyleSheet.create({
   },
   homeScreen: {flex: 1, justifyContent: 'center', backgroundColor: '#c82636'},
   card: {width: '100%', height: 200},
+  verticalCard: {
+    width: 200,
+    height: 300,
+    borderRadius: 20,
+    overflow: 'hidden',
+    margin: 20,
+  },
+
+  verticalCardGradient: {
+    height: '100%',
+    width: '100%',
+    justifyContent: 'flex-end',
+    padding: 10,
+  },
 
   cardGradient: {
     height: '100%',
