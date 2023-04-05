@@ -13,7 +13,7 @@ export const useLoginSetup = () => {
 
   const checkEmail = (value: string) => {
     setIsValidEmail(isEmail(email));
-    setEmail(value.toLowerCase());
+    setEmail(value);
   };
 
   const handleSubmitLogin = () => {

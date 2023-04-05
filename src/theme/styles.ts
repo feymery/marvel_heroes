@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
   input: {
     color: colors.white,
     fontWeight: '600',
+    padding: 0,
   },
   header: {
     color: colors.white,
